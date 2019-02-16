@@ -41,7 +41,8 @@ class _ContactItem extends StatelessWidget {
 
     //列表项主题部分
     Widget _button = Container(
-      padding: EdgeInsets.only(bottom: 10.0, top: 10.0,left: 16.0, right: 16.0),
+      padding:
+          EdgeInsets.only(bottom: 10.0, top: 10.0, left: 16.0, right: 16.0),
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
@@ -66,7 +67,8 @@ class _ContactItem extends StatelessWidget {
       _itemBody = Column(
         children: <Widget>[
           Container(
-            padding: EdgeInsets.only(bottom: 4.0, top: 4.0,left: 16.0, right: 16.0),
+            padding:
+                EdgeInsets.only(bottom: 4.0, top: 4.0, left: 16.0, right: 16.0),
             color: Color(AppColors.ContactGroupTitleBg),
             alignment: Alignment.centerLeft,
             child: Text(
@@ -135,6 +137,9 @@ class _ContactsPageState extends State<ContactsPage> {
       ..addAll(data.contacts)
       ..addAll(data.contacts)
       ..addAll(data.contacts);
+
+    _contacts
+        .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
   }
 
   @override
@@ -145,12 +150,17 @@ class _ContactsPageState extends State<ContactsPage> {
           return _functionbuttons[index];
         }
         int _cotactIndex = index - _functionbuttons.length;
-
         Contact _contact = _contacts[_cotactIndex];
+
+        bool _isGroupTitle = true;
+        if (_cotactIndex >= 1 &&
+            _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
+          _isGroupTitle = false;
+        }
         return _ContactItem(
           avatar: _contact.avatar,
           title: _contact.name,
-          groupTitle: _contact.nameIndex,
+          groupTitle: _isGroupTitle ? _contact.nameIndex : null,
         );
       },
       itemCount: _contacts.length + _functionbuttons.length,
