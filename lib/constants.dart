@@ -15,6 +15,8 @@ class AppColors {
   static const DeviceInfoItemBg = 0xfff5f5f5;
   static const DeviceInfoItemText = 0xff606062;
   static const DeviceInfoItemIcon=0xff606062;
+  static const ContactGroupTitleBg=0xffebebeb;
+  static const ContactGroupTitleText=0xff888888;
 }
 
 class AppStyles {
@@ -29,6 +31,11 @@ class AppStyles {
 
   static const DeviceInfoItemTextStyle =
       TextStyle(fontSize: 13.0, color: Color(AppColors.DeviceInfoItemText));
+
+  static const GroupTitleItemTextStyle=TextStyle(
+    fontSize: 14.0,
+    color: Color(AppColors.ContactGroupTitleText),
+  );
 }
 
 class Constants {
