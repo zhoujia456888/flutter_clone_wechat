@@ -39,10 +39,10 @@ class _ContactItem extends StatelessWidget {
       );
     }
 
-    //列表项主题部分
+    //列表项主体部分
     Widget _button = Container(
-      padding:
-          EdgeInsets.only(bottom: 10.0, top: 10.0, left: 16.0, right: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 10.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
@@ -86,6 +86,37 @@ class _ContactItem extends StatelessWidget {
     return _itemBody;
   }
 }
+
+const INDEX_BAR_WORDS = [
+  "↑",
+  "☆",
+  "A",
+  "B",
+  "C",
+  "D",
+  "E",
+  "F",
+  "G",
+  "H",
+  "I",
+  "J",
+  "K",
+  "L",
+  "M",
+  "N",
+  "O",
+  "P",
+  "Q",
+  "R",
+  "S",
+  "T",
+  "U",
+  "V",
+  "W",
+  "X",
+  "Y",
+  "Z"
+];
 
 class ContactsPage extends StatefulWidget {
   @override
@@ -144,26 +175,42 @@ class _ContactsPageState extends State<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (BuildContext context, int index) {
-        if (index < _functionbuttons.length) {
-          return _functionbuttons[index];
-        }
-        int _cotactIndex = index - _functionbuttons.length;
-        Contact _contact = _contacts[_cotactIndex];
+    final List<Widget> _letters = INDEX_BAR_WORDS.map((String word) {
+      return Expanded(child: Text(word));
+    }).toList();
 
-        bool _isGroupTitle = true;
-        if (_cotactIndex >= 1 &&
-            _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
-          _isGroupTitle = false;
-        }
-        return _ContactItem(
-          avatar: _contact.avatar,
-          title: _contact.name,
-          groupTitle: _isGroupTitle ? _contact.nameIndex : null,
-        );
-      },
-      itemCount: _contacts.length + _functionbuttons.length,
+    return Stack(
+      children: <Widget>[
+        ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            if (index < _functionbuttons.length) {
+              return _functionbuttons[index];
+            }
+            int _cotactIndex = index - _functionbuttons.length;
+            Contact _contact = _contacts[_cotactIndex];
+
+            bool _isGroupTitle = true;
+            if (_cotactIndex >= 1 &&
+                _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
+              _isGroupTitle = false;
+            }
+            return _ContactItem(
+              avatar: _contact.avatar,
+              title: _contact.name,
+              groupTitle: _isGroupTitle ? _contact.nameIndex : null,
+            );
+          },
+          itemCount: _contacts.length + _functionbuttons.length,
+        ),
+        Positioned(
+            width: Constants.IndexBarWidth,
+            right: 0.0,
+            top: 0.0,
+            bottom: 0.0,
+            child: Column(
+              children: _letters,
+            ))
+      ],
     );
   }
 }

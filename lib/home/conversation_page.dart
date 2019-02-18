@@ -14,20 +14,23 @@ class _ConversationItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //根据图片的获取方式初始化头像组件
-    Widget avatar;
+    Widget avatarChild;
     if (conversation.isAvatarFromNet()) {
-      avatar = Image.network(
+      avatarChild = Image.network(
         conversation.avatar,
         width: Constants.ConversationAvatarSize,
         height: Constants.ConversationAvatarSize,
       );
     } else {
-      avatar = Image.asset(
+      avatarChild = Image.asset(
         conversation.avatar,
         width: Constants.ConversationAvatarSize,
         height: Constants.ConversationAvatarSize,
       );
     }
+    Widget avatar = new ClipRRect(
+        borderRadius: BorderRadius.circular(6.0), child: avatarChild);
+
     Widget avtarContainer;
 
     if (conversation.unreadMsgCount > 0) {

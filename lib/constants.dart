@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AppColors {
   static const AppBarColor = 0xff303030;
+  static const AppBarBgColor = 0xffEEEEEE;
   static const TabIconActive = 0xff46c11b;
   static const TabIconNormal = 0xff999999;
   static const AppBarPopupMenuColor = 0xffffffff;
@@ -20,6 +21,10 @@ class AppColors {
 }
 
 class AppStyles {
+
+  static const AppBarTextStyle =
+  TextStyle(color: Color(AppColors.TitleColor));
+
   static const titleStyle =
       TextStyle(fontSize: 14.0, color: Color(AppColors.TitleColor));
 
@@ -46,4 +51,5 @@ class Constants {
   static const ConversationMuteSize = 18.0;
   static const DeviceInfoItemHeight = 32.0;
   static const ContactAvatarSize=36.0;
+  static const IndexBarWidth=24.0;
 }

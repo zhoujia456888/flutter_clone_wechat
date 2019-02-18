@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants.dart' show Constants, AppColors;
+import '../constants.dart' show Constants, AppColors,AppStyles;
 
 import './conversation_page.dart';
 import './contacts_page.dart';
@@ -104,7 +104,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('微信'),
+        title: Text('微信',style:AppStyles.AppBarTextStyle),
+        backgroundColor: Color(AppColors.DeviceInfoItemBg),
         elevation: 0.0,
         actions: <Widget>[
           IconButton(
@@ -112,9 +113,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   size: 22.0),
               onPressed: () {
                 print("点击了搜索按钮");
-              }),
+              },color: Colors.black,),
           Container(
-            width: 16.0,
+            width: 10.0,
           ),
           PopupMenuButton(
               itemBuilder: (BuildContext context) {
@@ -142,10 +143,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ];
               },
               icon: Icon(IconData(0xe658, fontFamily: Constants.IconFontFamily),
-                  size: 22.0),
+                  size: 22.0,
+                  color: Colors.black),
               onSelected: (ActionItems selected) {
                 print('点击的是$selected');
-              }),
+              },),
           Container(width: 16.0),
         ],
       ),
@@ -156,6 +158,7 @@ class _HomeScreenState extends State<HomeScreen> {
         controller: _pageController,
         itemCount: _pages.length,
         onPageChanged: (int index) {
+
           print('当前显示的是第$index页');
           setState(() {
             _currentIndex = index;
