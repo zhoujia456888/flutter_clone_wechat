@@ -135,6 +135,8 @@ const INDEX_BAR_WORDS = [
 class ContactsPage extends StatefulWidget {
   Color _indexBarBg = Colors.transparent;
 
+  String _currentLetter = '';
+
   //
 
   @override
@@ -200,13 +202,14 @@ class _ContactsPageState extends State<ContactsPage> {
 
     for (int i = 0; i < _contacts.length; i++) {
       bool _hasGroupTitle = true;
-      if (i>0&&_contacts[i].nameIndex.compareTo(_contacts[i - 1].nameIndex) == 0) {
+      if (i > 0 &&
+          _contacts[i].nameIndex.compareTo(_contacts[i - 1].nameIndex) == 0) {
         _hasGroupTitle = false;
       }
-      if(_hasGroupTitle){
-        _letterPosMap[_contacts[i].nameIndex]=_totalPos;
+      if (_hasGroupTitle) {
+        _letterPosMap[_contacts[i].nameIndex] = _totalPos;
       }
-      _totalPos+=_ContactItem._height(_hasGroupTitle);
+      _totalPos += _ContactItem._height(_hasGroupTitle);
     }
   }
 
@@ -217,71 +220,125 @@ class _ContactsPageState extends State<ContactsPage> {
     _scrollController.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  String _getLetter(BuildContext context, int titleHeight, Offset globalPos) {
+    RenderBox _box = context.findRenderObject();
+    var local = _box.globalToLocal(globalPos);
+    int index = (local.dy ~/ titleHeight).clamp(0, INDEX_BAR_WORDS.length - 1);
+    return INDEX_BAR_WORDS[index];
+  }
+
+  void _jumpToIndex(String letter) {
+    if (_letterPosMap.isNotEmpty) {
+      final _pos = _letterPosMap[letter];
+      if (_pos != null) {
+        _scrollController.animateTo(_pos,
+            duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+      }
+    }
+  }
+
+  Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
     final List<Widget> _letters = INDEX_BAR_WORDS.map((String word) {
       return Expanded(child: Text(word));
     }).toList();
 
-    return Stack(
-      children: <Widget>[
-        ListView.builder(
-          controller: _scrollController,
-          itemBuilder: (BuildContext context, int index) {
-            if (index < _functionbuttons.length) {
-              return _functionbuttons[index];
-            }
-            int _cotactIndex = index - _functionbuttons.length;
-            Contact _contact = _contacts[_cotactIndex];
+    final double _totalHeight = constraints.biggest.height;
+    final int _titleHeight = _totalHeight ~/ _letters.length;
 
-            bool _isGroupTitle = true;
-            if (_cotactIndex >= 1 &&
-                _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
-              _isGroupTitle = false;
-            }
+    return GestureDetector(
+      child: Column(
+        children: _letters,
+      ),
+      onVerticalDragDown: (DragDownDetails details) {
+        setState(() {
+          widget._indexBarBg = Colors.black26;
+          widget._currentLetter =
+              _getLetter(context, _titleHeight, details.globalPosition);
+          _jumpToIndex(widget._currentLetter);
+        });
+      },
+      onVerticalDragEnd: (DragEndDetails details) {
+        setState(() {
+          widget._indexBarBg = Colors.transparent;
+          widget._currentLetter = null;
+        });
+      },
+      onVerticalDragCancel: () {
+        //设定
+        setState(() {
+          widget._indexBarBg = Colors.transparent;
+          widget._currentLetter = null;
+        });
+      },
+      onVerticalDragUpdate: (DragUpdateDetails details) {
+        setState(() {
+          widget._indexBarBg = Colors.black26;
+          widget._currentLetter =
+              _getLetter(context, _titleHeight, details.globalPosition);
+          _jumpToIndex(widget._currentLetter);
+        });
+      },
+    );
+  }
 
-            return _ContactItem(
-              avatar: _contact.avatar,
-              title: _contact.name,
-              groupTitle: _isGroupTitle ? _contact.nameIndex : null,
-            );
-          },
-          itemCount: _contacts.length + _functionbuttons.length,
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> _body = [
+      ListView.builder(
+        controller: _scrollController,
+        itemBuilder: (BuildContext context, int index) {
+          if (index < _functionbuttons.length) {
+            return _functionbuttons[index];
+          }
+          int _cotactIndex = index - _functionbuttons.length;
+          Contact _contact = _contacts[_cotactIndex];
+
+          bool _isGroupTitle = true;
+          if (_cotactIndex >= 1 &&
+              _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
+            _isGroupTitle = false;
+          }
+
+          return _ContactItem(
+            avatar: _contact.avatar,
+            title: _contact.name,
+            groupTitle: _isGroupTitle ? _contact.nameIndex : null,
+          );
+        },
+        itemCount: _contacts.length + _functionbuttons.length,
+      ),
+      Positioned(
+          width: Constants.IndexBarWidth,
+          right: 0.0,
+          top: 0.0,
+          bottom: 0.0,
+          child: Container(
+            color: widget._indexBarBg,
+            child: LayoutBuilder(builder: _buildIndexBar),
+          )),
+    ];
+    if (widget._currentLetter != null && widget._currentLetter.isNotEmpty) {
+      _body.add(Center(
+        child: Container(
+          width: Constants.IndexLetterBoxSize,
+          height: Constants.IndexLetterBoxSize,
+          decoration: BoxDecoration(
+            color: AppColors.IndexLetterBoxBg,
+            borderRadius: BorderRadius.all(
+                Radius.circular(Constants.IndexLetterBoxRadius)),
+          ),
+          child: Center(
+            child: Text(
+              widget._currentLetter,
+              style: AppStyles.IndexLetterBoxTextStyle,
+            ),
+          ),
         ),
-        Positioned(
-            width: Constants.IndexBarWidth,
-            right: 0.0,
-            top: 0.0,
-            bottom: 0.0,
-            child: Container(
-                color: widget._indexBarBg,
-                child: GestureDetector(
-                  child: Column(
-                    children: _letters,
-                  ),
-                  onVerticalDragDown: (DragDownDetails) {
-                    print('onVerticalDragDown');
-                    setState(() {
-                      widget._indexBarBg = Colors.black26;
-                    });
-                    _scrollController.animateTo(_letterPosMap['M'],
-                        duration: Duration(milliseconds: 200),
-                        curve: Curves.easeIn);
-                  },
-                  onVerticalDragEnd: (DragEndDetails) {
-                    print('onVerticalDragEnd===');
-                    setState(() {
-                      widget._indexBarBg = Colors.transparent;
-                    });
-                  },
-                  onHorizontalDragCancel: () {
-                    print('onHorizontalDragCancelxxxx');
-                    setState(() {
-                      widget._indexBarBg = Colors.transparent;
-                    });
-                  },
-                )))
-      ],
+      ));
+    }
+
+    return Stack(
+      children: _body,
     );
   }
 }

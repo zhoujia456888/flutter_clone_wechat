@@ -15,15 +15,14 @@ class AppColors {
   static const ConversationMuteIcon = 0xffd8d8d8;
   static const DeviceInfoItemBg = 0xfff5f5f5;
   static const DeviceInfoItemText = 0xff606062;
-  static const DeviceInfoItemIcon=0xff606062;
-  static const ContactGroupTitleBg=0xffebebeb;
-  static const ContactGroupTitleText=0xff888888;
+  static const DeviceInfoItemIcon = 0xff606062;
+  static const ContactGroupTitleBg = 0xffebebeb;
+  static const ContactGroupTitleText = 0xff888888;
+  static const IndexLetterBoxBg = Colors.black45;
 }
 
 class AppStyles {
-
-  static const AppBarTextStyle =
-  TextStyle(color: Color(AppColors.TitleColor));
+  static const AppBarTextStyle = TextStyle(color: Color(AppColors.TitleColor));
 
   static const titleStyle =
       TextStyle(fontSize: 14.0, color: Color(AppColors.TitleColor));
@@ -37,9 +36,13 @@ class AppStyles {
   static const DeviceInfoItemTextStyle =
       TextStyle(fontSize: 13.0, color: Color(AppColors.DeviceInfoItemText));
 
-  static const GroupTitleItemTextStyle=TextStyle(
+  static const GroupTitleItemTextStyle = TextStyle(
     fontSize: 14.0,
     color: Color(AppColors.ContactGroupTitleText),
+  );
+  static const IndexLetterBoxTextStyle = TextStyle(
+    fontSize: 64.0,
+    color: Colors.white,
   );
 }
 
@@ -50,6 +53,8 @@ class Constants {
   static const UnReadMsgNotifyDotSize = 20.0;
   static const ConversationMuteSize = 18.0;
   static const DeviceInfoItemHeight = 32.0;
-  static const ContactAvatarSize=36.0;
-  static const IndexBarWidth=24.0;
+  static const ContactAvatarSize = 36.0;
+  static const IndexBarWidth = 24.0;
+  static const IndexLetterBoxSize = 114.0;
+  static const IndexLetterBoxRadius = 14.0;
 }
