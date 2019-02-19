@@ -220,7 +220,8 @@ class _ContactsPageState extends State<ContactsPage> {
     _scrollController.dispose();
   }
 
-  String _getLetter(BuildContext context, int titleHeight, Offset globalPos) {
+  String _getLetter(
+      BuildContext context, double titleHeight, Offset globalPos) {
     RenderBox _box = context.findRenderObject();
     var local = _box.globalToLocal(globalPos);
     int index = (local.dy ~/ titleHeight).clamp(0, INDEX_BAR_WORDS.length - 1);
@@ -239,11 +240,13 @@ class _ContactsPageState extends State<ContactsPage> {
 
   Widget _buildIndexBar(BuildContext context, BoxConstraints constraints) {
     final List<Widget> _letters = INDEX_BAR_WORDS.map((String word) {
-      return Expanded(child: Text(word));
+      return Expanded(
+        child: Text(word),
+      );
     }).toList();
 
     final double _totalHeight = constraints.biggest.height;
-    final int _titleHeight = _totalHeight ~/ _letters.length;
+    final double _titleHeight = _totalHeight / _letters.length;
 
     return GestureDetector(
       child: Column(

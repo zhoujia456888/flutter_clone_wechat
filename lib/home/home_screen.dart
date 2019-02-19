@@ -3,6 +3,7 @@ import '../constants.dart' show Constants, AppColors,AppStyles;
 
 import './conversation_page.dart';
 import './contacts_page.dart';
+import './discover_page.dart';
 
 
 
@@ -58,9 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _pages = [
       ConversationPage(),
       ContactsPage(),
-      Container(
-        color: Colors.blue,
-      ),
+      DiscoverPage(),
       Container(
         color: Colors.brown,
       )
