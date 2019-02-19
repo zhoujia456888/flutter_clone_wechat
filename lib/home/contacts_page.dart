@@ -17,8 +17,22 @@ class _ContactItem extends StatelessWidget {
   final String groupTitle;
   final VoidCallback onpress;
 
+  static double MARGIN_VERTIAL = 10.0;
+  final double BUTTON_HEIGHT = 48.0;
+  static double GROUP_TITLE_HEIGHT = 24.0;
+
   bool get _isAvatarFromNet {
     return this.avatar.startsWith('http') || this.avatar.startsWith('https');
+  }
+
+  static _height(bool hasGroupTitle) {
+    final _buttonHeight = MARGIN_VERTIAL * 2 +
+        Constants.ContactAvatarSize +
+        Constants.Dividerwidth;
+    if (hasGroupTitle) {
+      return _buttonHeight + GROUP_TITLE_HEIGHT;
+    }
+    return _buttonHeight;
   }
 
   @override
@@ -41,7 +55,7 @@ class _ContactItem extends StatelessWidget {
 
     //列表项主体部分
     Widget _button = Container(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
+      padding: EdgeInsets.symmetric(vertical: MARGIN_VERTIAL),
       margin: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
           border: Border(
@@ -67,8 +81,8 @@ class _ContactItem extends StatelessWidget {
       _itemBody = Column(
         children: <Widget>[
           Container(
-            padding:
-                EdgeInsets.only(bottom: 4.0, top: 4.0, left: 16.0, right: 16.0),
+            height: GROUP_TITLE_HEIGHT,
+            padding: EdgeInsets.only(left: 16.0, right: 16.0),
             color: Color(AppColors.ContactGroupTitleBg),
             alignment: Alignment.centerLeft,
             child: Text(
@@ -119,11 +133,16 @@ const INDEX_BAR_WORDS = [
 ];
 
 class ContactsPage extends StatefulWidget {
+  Color _indexBarBg = Colors.transparent;
+
+  //
+
   @override
   _ContactsPageState createState() => _ContactsPageState();
 }
 
 class _ContactsPageState extends State<ContactsPage> {
+  ScrollController _scrollController;
   final ContactsPageData data = ContactsPageData.mock();
   final List<Contact> _contacts = [];
 
@@ -158,6 +177,8 @@ class _ContactsPageState extends State<ContactsPage> {
     ),
   ];
 
+  final Map _letterPosMap = {INDEX_BAR_WORDS[0]: 0.0};
+
   var mockConversation = ContactsPageData;
 
   @override
@@ -171,6 +192,29 @@ class _ContactsPageState extends State<ContactsPage> {
 
     _contacts
         .sort((Contact a, Contact b) => a.nameIndex.compareTo(b.nameIndex));
+
+    _scrollController = new ScrollController();
+
+    //计算用于IndexBar 进行定位的关键通讯录列表项的位置
+    var _totalPos = _functionbuttons.length * _ContactItem._height(false);
+
+    for (int i = 0; i < _contacts.length; i++) {
+      bool _hasGroupTitle = true;
+      if (i>0&&_contacts[i].nameIndex.compareTo(_contacts[i - 1].nameIndex) == 0) {
+        _hasGroupTitle = false;
+      }
+      if(_hasGroupTitle){
+        _letterPosMap[_contacts[i].nameIndex]=_totalPos;
+      }
+      _totalPos+=_ContactItem._height(_hasGroupTitle);
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _scrollController.dispose();
   }
 
   @override
@@ -182,6 +226,7 @@ class _ContactsPageState extends State<ContactsPage> {
     return Stack(
       children: <Widget>[
         ListView.builder(
+          controller: _scrollController,
           itemBuilder: (BuildContext context, int index) {
             if (index < _functionbuttons.length) {
               return _functionbuttons[index];
@@ -194,6 +239,7 @@ class _ContactsPageState extends State<ContactsPage> {
                 _contact.nameIndex == _contacts[_cotactIndex - 1].nameIndex) {
               _isGroupTitle = false;
             }
+
             return _ContactItem(
               avatar: _contact.avatar,
               title: _contact.name,
@@ -207,9 +253,34 @@ class _ContactsPageState extends State<ContactsPage> {
             right: 0.0,
             top: 0.0,
             bottom: 0.0,
-            child: Column(
-              children: _letters,
-            ))
+            child: Container(
+                color: widget._indexBarBg,
+                child: GestureDetector(
+                  child: Column(
+                    children: _letters,
+                  ),
+                  onVerticalDragDown: (DragDownDetails) {
+                    print('onVerticalDragDown');
+                    setState(() {
+                      widget._indexBarBg = Colors.black26;
+                    });
+                    _scrollController.animateTo(_letterPosMap['M'],
+                        duration: Duration(milliseconds: 200),
+                        curve: Curves.easeIn);
+                  },
+                  onVerticalDragEnd: (DragEndDetails) {
+                    print('onVerticalDragEnd===');
+                    setState(() {
+                      widget._indexBarBg = Colors.transparent;
+                    });
+                  },
+                  onHorizontalDragCancel: () {
+                    print('onHorizontalDragCancelxxxx');
+                    setState(() {
+                      widget._indexBarBg = Colors.transparent;
+                    });
+                  },
+                )))
       ],
     );
   }
