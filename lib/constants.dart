@@ -50,6 +50,15 @@ class AppStyles {
     fontSize:64.0,
     color: Colors.white
   );
+
+  static const MineNickStyle=TextStyle(
+    fontSize:20.0,
+  );
+
+  static const MineNumberStyle=TextStyle(
+    fontSize:14.0,
+    color: Colors.black45
+  );
 }
 
 class Constants {
@@ -64,4 +73,5 @@ class Constants {
   static const IndexLetterBoxSize = 114.0;
   static const IndexLetterBoxRadius = 14.0;
   static const FullWidthIconButtonIconSize=24.0;
+  static const MainHandImgSize=60.0;
 }

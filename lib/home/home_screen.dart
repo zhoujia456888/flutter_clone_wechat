@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/home/mine_page.dart';
 import '../constants.dart' show Constants, AppColors,AppStyles;
 
 import './conversation_page.dart';
@@ -60,9 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ConversationPage(),
       ContactsPage(),
       DiscoverPage(),
-      Container(
-        color: Colors.brown,
-      )
+      MinePage(),
     ];
   }
 
@@ -106,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text('微信',style:AppStyles.AppBarTextStyle),
         backgroundColor: Color(AppColors.DeviceInfoItemBg),
         elevation: 0.0,
+        brightness: Brightness.light,//状态栏字体颜色
         actions: <Widget>[
           IconButton(
               icon: Icon(IconData(0xe65e, fontFamily: Constants.IconFontFamily),
